@@ -11,6 +11,8 @@ public class Telegram implements Serializable {
 
     private int periodInMin;
 
+    private boolean state;
+
     private long nextTime;
 
     public String getHeader() {
@@ -46,5 +48,30 @@ public class Telegram implements Serializable {
     }
     public void setPeriodInMin(int periodInMin) {
         this.periodInMin = periodInMin;
+    }
+
+    public boolean getState() {
+        return state;
+    }
+    public void setState(boolean state) {
+        this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return header;
+    }
+
+    @Override
+    public int hashCode() {
+        return header.hashCode() + digitalHeader.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (this.getClass() != obj.getClass()) return false;
+        Telegram otherTelegram = (Telegram) obj;
+        return this.header == otherTelegram.header && this.digitalHeader == otherTelegram.digitalHeader;
     }
 }

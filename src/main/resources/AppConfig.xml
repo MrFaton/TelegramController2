@@ -5,9 +5,14 @@
 
     <bean id="notificationPanel" class="com.mr_faton.gui.panel.NotificationPanel"/>
     <bean id="buttonPanel" class="com.mr_faton.gui.panel.ButtonPanel"/>
+    <bean id="menuBar" class="com.mr_faton.gui.panel.Menu"/>
+
     <bean id="mainFrame" class="com.mr_faton.gui.frame.MainFrame">
+        <constructor-arg name="menuBar" ref="menuBar"/>
         <constructor-arg name="notificationPanel" ref="notificationPanel"/>
         <constructor-arg name="buttonPanel" ref="buttonPanel"/>
     </bean>
+
+
 
 </beans>
