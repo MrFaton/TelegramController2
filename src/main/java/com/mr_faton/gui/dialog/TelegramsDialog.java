@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,8 +18,6 @@ import java.util.*;
 import java.util.List;
 
 public class TelegramsDialog extends JDialog {
-    private static final Logger logger = Logger.getLogger("" +
-            "com.mr_faton.gui.dialog.TelegramsDialog");
     private static int WIDTH = 450;
     private static int HEIGHT = 400;
     private List<Telegram> telegramList;
@@ -43,10 +43,25 @@ public class TelegramsDialog extends JDialog {
                         telegram.getPeriodInMin(),
                         telegram.getState()
                 });
+                i++;
             }
         }
 
-        final JTable table = new JTable(tableModel);
+        final JTable table = new JTable(tableModel) {
+            @Override
+            public Class<?> getColumnClass(int column) {
+                switch (column) {
+                    case 0: return String.class;
+                    case 1: return String .class;
+                    case 2: return Integer.class;
+                    case 3: return Integer.class;
+                    case 4: return Integer.class;
+                    case 5: return Boolean.class;
+                    default: return Object.class;
+                }
+            }
+        };
+
         //устанавливаем цвет фона ячеек белым
         table.setBackground(Color.white);
         //добавляем скроллер в таблицу (так же это позволяет сделать видимыми название столбцов таблицы)
@@ -83,57 +98,25 @@ public class TelegramsDialog extends JDialog {
             //сохранить всю таблиыу в настройки
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (telegramList == null) telegramList = new ArrayList<>();
+                List<Telegram> updatedTelegramList = new ArrayList<>();
 
-                Vector dataVector = tableModel.getDataVector();
+                int rows = tableModel.getRowCount();
+                for (int rowNumber = 0; rowNumber < rows; rowNumber++) {
+                    Telegram telegram = new Telegram();
 
-                System.out.println(dataVector);
+                    telegram.setHeader((String) tableModel.getValueAt(rowNumber, 0));
+                    telegram.setDigitalHeader((String) tableModel.getValueAt(rowNumber, 1));
+                    telegram.setBeginHour((Integer) tableModel.getValueAt(rowNumber, 2));
+                    telegram.setBeginMin((Integer) tableModel.getValueAt(rowNumber, 3));
+                    telegram.setPeriodInMin((Integer) tableModel.getValueAt(rowNumber, 4));
+                    telegram.setState((Boolean) tableModel.getValueAt(rowNumber, 5));
 
-//                //remove telegram who was deleted as row
-//                int rows = tableModel.getRowCount();
-//                for (int i = 0; i < rows; i++) {
-//                    String telegramHeaderInTable = tableModel.getValueAt(i, 0).toString();
-//                    for (Telegram telegram : telegramList) {
-//                        String telegramHeaderInList = tele
-//                    }
-//                }
-//
-//                //создаём мапу, в которой будет храниться таблица (ключ: названик карты, значение: заголовок карты)
-//                Map<String, String> allPatternsMap = new LinkedHashMap<>();
-//                //определяем кол-во строк
-//                int rowCount = table.getRowCount();
-//                //запускаем цикл по каждой строке
-//                for (int row = 0; row < rowCount; row++) {
-//                    //получем имя карты из текущей строки
-//                    String mapName = (String) tableModel.getValueAt(row, 0);
-//                    //если его нет либо оно пустое, показываем пользователю сообщение о том, что ячейка пустая
-//                    if (mapName == null || mapName.length() == 0) {
-//                        showMessage(row + 1, table.getColumnName(0));
-//                        return;
-//                    }
-//                    //получаем заголовок карты из текущей строки
-//                    String mapHeader = (String) tableModel.getValueAt(row, 1);
-//                    //если его нет либо оно пустое, показываем пользователю сообщение о том, что ячейка пустая
-//                    if (mapHeader == null || mapHeader.length() == 0) {
-//                        showMessage(row + 1, table.getColumnName(1));
-//                        return;
-//                    }
-//                    //ложем в нашу мапу имя карты и её заголовок
-//                    allPatternsMap.put(mapName, mapHeader);
-//                }
-//                //передаём нашему обработчику xml-файла с настройками мапу шаблонов для сохранения в xml
-//                settingsWorker.setPatterns(allPatternsMap);
-//                //сохранить настройки в xml-файл, true - чтобы показать сообщение об успешном сохранении
-//                settingsWorker.saveSettings(true);
-//            }
-//
-//            //конструирует объект с предупреждающим сообщением (если есть пустая ячейка)
-//            private void showMessage(int row, String columnName) {
-//                new WarningMessenger("Пустая ячейка!",
-//                        "Не не не, мы не будем сохранять данные,\n" +
-//                                "когда ячейка в строке № \"" + row + "\" и столбце \"" + columnName + "\" пустая.\n" +
-//                                "Вернитесь к таблице и заполните пустую ячейку!"
-//                );
+                    updatedTelegramList.add(telegram);
+                }
+
+                SettingsHolder.updateTelegramList(updatedTelegramList);
+
+                UserNotifier.infoMessage("Сохранение", "Настройки сохранены успешно");
             }
         });
 
@@ -143,6 +126,7 @@ public class TelegramsDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 //просто делает окно настроек шаблоно невидимым
                 setVisible(false);
+                dispose();
             }
         });
 

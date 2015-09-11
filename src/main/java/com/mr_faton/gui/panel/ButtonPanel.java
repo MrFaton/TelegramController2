@@ -1,6 +1,6 @@
 package com.mr_faton.gui.panel;
 
-import com.mr_faton.core.util.SettingsHolder;
+import com.mr_faton.core.util.AlarmPlayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,15 +11,19 @@ public class ButtonPanel extends JPanel {
     private final JButton startButton;
     private final JButton notifiedButton;
     private final JButton stopButton;
+    private final AlarmPlayer alarmPlayer;
 
-    public ButtonPanel() {
+    public ButtonPanel(final AlarmPlayer alarmPlayer) {
+        this.alarmPlayer = alarmPlayer;
+
         startButton = new JButton("Старт");
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 disableStartButton();
                 enableStopButton();
-                System.out.println("press Start Button");
+                alarmPlayer.play();
+                System.out.println("working");
             }
         });
 
@@ -27,7 +31,8 @@ public class ButtonPanel extends JPanel {
         notifiedButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //notified button listener
+                enableStopButton();
+                alarmPlayer.stop();
             }
         });
 
@@ -37,7 +42,7 @@ public class ButtonPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 disableStopButton();
                 enableStartButton();
-                System.out.println("press Stop Button");
+                alarmPlayer.stop();
             }
         });
 
@@ -50,6 +55,9 @@ public class ButtonPanel extends JPanel {
         disableStopButton();
     }
 
+    public boolean isStartButtonEnabled() {
+        return startButton.isEnabled();
+    }
     public void enableStartButton() {
         startButton.setEnabled(true);
     }

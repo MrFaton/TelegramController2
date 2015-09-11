@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SettingsHolder {
@@ -34,11 +36,40 @@ public class SettingsHolder {
         }
     }
 
+    // ***** Setters *****
+    public static void updateTelegramList(List<Telegram> newTelegramList) {
+        telegramList = newTelegramList;
+    }
+
+    public static void updateDBServerList(List<DBServer> newDBServerList) {
+        dbServerList = newDBServerList;
+    }
 
     // ***** Getters *****
 
     public static List<Telegram> getTelegramList() {
+//        return Collections.unmodifiableList(telegramList);
         return telegramList;
+    }
+
+    public static List<Telegram> getEnableTelegramList() {
+        List<Telegram> enableTelegramList = new ArrayList<>();
+        for (Telegram telegram : telegramList) {
+            if (telegram.getState()) enableTelegramList.add(telegram);
+        }
+        return enableTelegramList;
+    }
+
+    public static List<DBServer> getDbServerList() {
+        return dbServerList;
+    }
+
+    public static List<DBServer> getEnabledDbServerList() {
+        List<DBServer> enabledDBServerList = new ArrayList<>();
+        for (DBServer dbServer : dbServerList) {
+            if (dbServer.getState()) enabledDBServerList.add(dbServer);
+        }
+        return enabledDBServerList;
     }
 
     //     ***** Service *****

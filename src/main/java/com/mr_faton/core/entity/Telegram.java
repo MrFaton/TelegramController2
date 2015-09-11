@@ -57,6 +57,13 @@ public class Telegram implements Serializable {
         this.state = state;
     }
 
+    public long getNextTime() {
+        return nextTime;
+    }
+    public void setNextTime(long nextTime) {
+        this.nextTime = nextTime;
+    }
+
     @Override
     public String toString() {
         return header;
