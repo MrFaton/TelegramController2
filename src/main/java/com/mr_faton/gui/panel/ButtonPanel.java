@@ -1,6 +1,10 @@
 package com.mr_faton.gui.panel;
 
+import com.mr_faton.core.TelegramController;
+import com.mr_faton.core.context.AppContext;
+import com.mr_faton.core.dao.TelegramControllerDAO;
 import com.mr_faton.core.util.AlarmPlayer;
+import org.springframework.context.ApplicationContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +16,7 @@ public class ButtonPanel extends JPanel {
     private final JButton notifiedButton;
     private final JButton stopButton;
     private final AlarmPlayer alarmPlayer;
+    private Thread telegramControllerTread = null;
 
     public ButtonPanel(final AlarmPlayer alarmPlayer) {
         this.alarmPlayer = alarmPlayer;
@@ -22,8 +27,13 @@ public class ButtonPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 disableStartButton();
                 enableStopButton();
-                alarmPlayer.play();
-                System.out.println("working");
+                telegramControllerTread = new Thread(new TelegramController(
+                        (TelegramControllerDAO) AppContext.getBeanByName("telegramControllerDAO"),
+                        (NotificationPanel) AppContext.getBeanByName("notificationPanel"),
+                        (ButtonPanel) AppContext.getBeanByName("buttonPanel"),
+                        (AlarmPlayer) AppContext.getBeanByName("alarmPlayer")
+                ));
+                telegramControllerTread.start();
             }
         });
 
@@ -42,7 +52,7 @@ public class ButtonPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 disableStopButton();
                 enableStartButton();
-                alarmPlayer.stop();
+                telegramControllerTread.interrupt();
             }
         });
 

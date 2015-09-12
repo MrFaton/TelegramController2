@@ -1,6 +1,7 @@
 package com.mr_faton.gui.frame;
 
 import com.mr_faton.core.util.SettingsHolder;
+import com.mr_faton.gui.notifier.UserNotifier;
 import com.mr_faton.gui.panel.*;
 import com.mr_faton.gui.panel.Menu;
 
@@ -10,10 +11,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame{
-    private final int WIDTH = 645;
+    private final int WIDTH = 780;
     private final int HEIGHT = 360;
 
-    public MainFrame(NotificationPanel notificationPanel, ButtonPanel buttonPanel, Menu menuBar) throws HeadlessException {
+    public MainFrame(NotificationPanel notificationPanel, final ButtonPanel buttonPanel, Menu menuBar) throws HeadlessException {
         setLayout(new BorderLayout(10, 10));
         setJMenuBar(menuBar);
         add(notificationPanel, BorderLayout.CENTER);
@@ -32,6 +33,13 @@ public class MainFrame extends JFrame{
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                if (!buttonPanel.isStartButtonEnabled()) {
+                    UserNotifier.warningMessage("Предупреждение о закрытии!",
+                            "Нельзя просто так взять и закрыть программу!<br/>" +
+                                    "Сначала остановите её нажатием кнопки \"Стоп\".");
+                    return;
+                }
+
                 setVisible(false);
                 SettingsHolder.save();
                 dispose();

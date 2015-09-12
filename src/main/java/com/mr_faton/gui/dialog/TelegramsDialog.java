@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,8 +19,8 @@ import java.util.*;
 import java.util.List;
 
 public class TelegramsDialog extends JDialog {
-    private static int WIDTH = 450;
-    private static int HEIGHT = 400;
+    private static int WIDTH = 660;
+    private static int HEIGHT = 280;
     private List<Telegram> telegramList;
 
     public TelegramsDialog() {
@@ -76,6 +77,9 @@ public class TelegramsDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 //добавляем пустую строку в таблицу
                 tableModel.addRow(new String[]{});
+                int lastRow = tableModel.getRowCount() - 1;
+                int lastColumn = tableModel.getColumnCount() - 1;
+                tableModel.setValueAt(false, lastRow, lastColumn);
             }
         });
 
@@ -98,6 +102,8 @@ public class TelegramsDialog extends JDialog {
             //сохранить всю таблиыу в настройки
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!cellValidator(tableModel)) return;
+
                 List<Telegram> updatedTelegramList = new ArrayList<>();
 
                 int rows = tableModel.getRowCount();
@@ -148,5 +154,24 @@ public class TelegramsDialog extends JDialog {
         setSize(WIDTH, HEIGHT);
         //устанавливаем положение (координаты фрейма)
         setLocation(monitorWidth / 2 - WIDTH / 2, monitorHeight / 2 - HEIGHT / 2);
+    }
+
+    private boolean cellValidator(final TableModel tableModel) {
+        int rows = tableModel.getRowCount();
+        int columns = tableModel.getColumnCount();
+
+        for (int curRow = 0; curRow < rows; curRow++) {
+            for (int curColumn = 0; curColumn < columns; curColumn++) {
+                Object cellValue = tableModel.getValueAt(curRow, curColumn);
+                if (cellValue == null || cellValue.toString().length() == 0) {
+                    UserNotifier.warningMessage("Пустая ячейка",
+                            "Ячейка в строке №" + (++curRow) + " и столбце №" + (++curColumn) + " не заполнена.<br/>" +
+                                    "Заполните ячейку или снимите с неё выделение.");
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

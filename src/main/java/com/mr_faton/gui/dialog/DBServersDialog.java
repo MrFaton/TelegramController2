@@ -8,6 +8,7 @@ import com.mr_faton.gui.notifier.UserNotifier;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBServersDialog extends JDialog{
-    private static int WIDTH = 450;
-    private static int HEIGHT = 400;
+    private static int WIDTH = 730;
+    private static int HEIGHT = 250;
     private List<DBServer> dbServerList;
 
     public DBServersDialog() {
-        super((MainFrame) AppContext.getBeanByName("mainFrame"), "Настройки телеграмм", true);
+        super((MainFrame) AppContext.getBeanByName("mainFrame"), "Настройки серверов БД", true);
 
         dbServerList = SettingsHolder.getDbServerList();
 
@@ -36,7 +37,8 @@ public class DBServersDialog extends JDialog{
                         dbServer.getName(),
                         dbServer.getUrl(),
                         dbServer.getUser(),
-                        dbServer.getUserPassword()
+                        dbServer.getUserPassword(),
+                        dbServer.getState()
                 });
                 i++;
             }
@@ -47,9 +49,9 @@ public class DBServersDialog extends JDialog{
             public Class<?> getColumnClass(int column) {
                 switch (column) {
                     case 0: return String.class;
-                    case 1: return String .class;
-                    case 2: return String .class;
-                    case 3: return String .class;
+                    case 1: return String.class;
+                    case 2: return String.class;
+                    case 3: return String.class;
                     case 4: return Boolean.class;
                     default: return Object.class;
                 }
@@ -68,6 +70,9 @@ public class DBServersDialog extends JDialog{
             public void actionPerformed(ActionEvent e) {
                 //добавляем пустую строку в таблицу
                 tableModel.addRow(new String[]{});
+                int lastRow = tableModel.getRowCount() - 1;
+                int lastColumn = tableModel.getColumnCount() - 1;
+                tableModel.setValueAt(false, lastRow, lastColumn);
             }
         });
 
@@ -89,6 +94,8 @@ public class DBServersDialog extends JDialog{
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!cellValidator(tableModel)) return;
+
                 List<DBServer> updatedDbServerList = new ArrayList<>();
 
                 int rows = tableModel.getRowCount();
@@ -138,5 +145,24 @@ public class DBServersDialog extends JDialog{
         setSize(WIDTH, HEIGHT);
         //устанавливаем положение (координаты фрейма)
         setLocation(monitorWidth / 2 - WIDTH / 2, monitorHeight / 2 - HEIGHT / 2);
+    }
+
+    private boolean cellValidator(final TableModel tableModel) {
+        int rows = tableModel.getRowCount();
+        int columns = tableModel.getColumnCount();
+
+        for (int curRow = 0; curRow < rows; curRow++) {
+            for (int curColumn = 0; curColumn < columns; curColumn++) {
+                Object cellValue = tableModel.getValueAt(curRow, curColumn);
+                if (cellValue == null || cellValue.toString().length() == 0) {
+                    UserNotifier.warningMessage("Пустая ячейка",
+                            "Ячейка в строке №" + (++curRow) + " и столбце №" + (++curColumn) + " не заполнена.<br/>" +
+                                    "Заполните ячейку или снимите с неё выделение.");
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

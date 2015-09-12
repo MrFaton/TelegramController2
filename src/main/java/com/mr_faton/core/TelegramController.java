@@ -11,9 +11,13 @@ import com.mr_faton.gui.panel.NotificationPanel;
 import org.apache.log4j.Logger;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class TelegramController implements Runnable{
+    private static final Logger logger = Logger.getLogger("" +
+            "com.mr_faton.core.TelegramController");
     private final List<Telegram> enabledTelegrams = SettingsHolder.getEnableTelegramList();
     private final List<DBServer> enabledDBServers = SettingsHolder.getEnabledDbServerList();
     private final TelegramControllerDAO telegramControllerDAO;
@@ -29,10 +33,29 @@ public class TelegramController implements Runnable{
         this.notificationPanel = notificationPanel;
         this.buttonPanel = buttonPanel;
         this.alarmPlayer = alarmPlayer;
+
+        if (enabledTelegrams == null || enabledTelegrams.isEmpty()) {
+            UserNotifier.errorMessage("Список телеграмм", "Список телеграмм для работы пуст.<br/>" +
+                    "Добавьте в список хотя бы одну телеграмму или включите уже имеющуюся.");
+            buttonPanel.enableStartButton();
+            buttonPanel.disableStopButton();
+            return;
+        }
+
+        if (enabledDBServers == null || enabledDBServers.isEmpty()) {
+            UserNotifier.errorMessage("Список серверов баз данных", "Список серверов баз данных для работы пуст.<br/>" +
+                    "Добавьте в список хотя бы одну базу данных или включите уже имеющуюся.");
+            buttonPanel.enableStartButton();
+            buttonPanel.disableStopButton();
+            return;
+        }
     }
 
     @Override
     public void run() {
+        logger.info("TelegramController is start");
+        notificationPanel.addNotification("Начало работы");
+        logger.debug("resolve next time for every enabled telegram from list " + enabledTelegrams);
         try {
             for (Telegram telegram : enabledTelegrams) {
                 telegram.setNextTime(resolveNextTime(telegram));
@@ -44,37 +67,47 @@ public class TelegramController implements Runnable{
             while (true) {
                 nextTelegram = resolveNextTelegram(enabledTelegrams);
                 telegramTime = nextTelegram.getNextTime();
-                sleepTime = System.currentTimeMillis() - telegramTime;
+                sleepTime = telegramTime - System.currentTimeMillis();
 
-                String message = "Следующая телеграмма " + nextTelegram + " и она обработается ";
                 if (sleepTime > 0) {
-                    message = message + "через " + sleepTime / 60_000 + " мин";
+                    logger.info("next telegram is " + nextTelegram + " and it processed at " + convertTime(sleepTime));
+                    notificationPanel.addNotification("Следующая телеграмма \"" + nextTelegram +
+                            "\" и мы проверим её в " + convertTime(sleepTime));
                     Thread.sleep(sleepTime);
-                } else {
-                    message = message + "сейчас";
                 }
-                notificationPanel.addNotification(message);
 
                 for (DBServer dbServer : enabledDBServers) {
+                    notificationPanel.
+                            addNotification("Проверяем телеграмму \"" + nextTelegram + "\" в БД \"" + dbServer + " \"");
                     if (!telegramControllerDAO.isTelegramExist(nextTelegram, dbServer)) {
+                        logger.info("telegram" + nextTelegram + " is not exist on db server " + dbServer);
                         buttonPanel.enableNotifiedButton();
                         buttonPanel.disableStopButton();
-                        notificationPanel.addWarningNotification("Телеграмма " + nextTelegram + " пропущена");
+                        notificationPanel.addWarningNotification("Телеграмма \"" + nextTelegram + "\" в БД \"" +
+                                dbServer + "\" НЕ существует!");
                         alarmPlayer.play();
                         UserNotifier.errorMessage("Пропущена телеграмма",
                                 "Была пропущена телеграмма, ознакомьтесь с деталями!");
+                    } else {
+                        notificationPanel.
+                                addNotification("Телеграмма \"" + nextTelegram + "\" есть в БД \"" + dbServer + "\"");
                     }
-                    notificationPanel.addNotification("Телеграмма " + nextTelegram + " прошла успешно");
                 }
 
                 nextTelegram.setNextTime(resolveNextTime(nextTelegram));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (InterruptedException e) {
+            logger.warn("TelegramController was interrupted");
+            notificationPanel.addNotification("Работа прервана");
+        } catch (Exception ex) {
+            logger.warn("some exception", ex);
+            notificationPanel.addNotification("Работа прервана");
         }
     }
 
     private long resolveNextTime(Telegram telegram) {
+        logger.debug("resolve next time for telegram " + telegram);
+
         int beginHour = telegram.getBeginHour();
         int beginMin = telegram.getBeginMin();
         int periodInMin = telegram.getPeriodInMin();
@@ -89,10 +122,12 @@ public class TelegramController implements Runnable{
             workTime.add(Calendar.MINUTE, periodInMin);
         }
 
-        return workTime.getTimeInMillis() - currentTime;
+        return workTime.getTimeInMillis();
     }
 
     private Telegram resolveNextTelegram(List<Telegram> enabledTelegrams) {
+        logger.debug("resolve next telegram");
+
         long minTime = Long.MAX_VALUE;
         long telegramTime;
         Telegram nextTelegram = null;
@@ -104,5 +139,10 @@ public class TelegramController implements Runnable{
             }
         }
         return nextTelegram;
+    }
+
+    private String convertTime(long sleepTime) {
+        Date date = new Date(System.currentTimeMillis() + sleepTime);
+        return String.format("%tH:%<tM:%<tS", date);
     }
 }

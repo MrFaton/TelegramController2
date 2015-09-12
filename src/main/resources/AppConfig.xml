@@ -18,6 +18,6 @@
         <constructor-arg name="buttonPanel" ref="buttonPanel"/>
     </bean>
 
-
+    <bean id="telegramControllerDAO" class="com.mr_faton.core.dao.TelegramControllerDAO"/>
 
 </beans>

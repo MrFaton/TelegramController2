@@ -11,7 +11,7 @@ import java.util.Calendar;
 public class TelegramControllerDAO {
     private static final Logger logger = Logger.getLogger("" +
             "com.mr_faton.core.dao.TelegramControllerDAO");
-    private static final String SQL = "SELECT title FROM brizdb WHERE digit_title = ? AND p_date >= ?;";
+    private static final String SQL = "SELECT title FROM brizdb.tabl_prin_soob WHERE n_title = ? AND date_time >= ?;";
 
     public TelegramControllerDAO() throws ClassNotFoundException {
         try {
@@ -23,6 +23,7 @@ public class TelegramControllerDAO {
     }
 
     public boolean isTelegramExist(Telegram telegram, DBServer dbServer) throws SQLException {
+        logger.debug("check telegram " + telegram + " on db server " + dbServer);
         boolean found = false;
 
         final String jdbcURL = dbServer.getUrl();
@@ -60,8 +61,8 @@ public class TelegramControllerDAO {
 
     private String koi8Decoder(byte[] bytes) {
         try {
-//            return new String(bytes, "KOI8-R");
-            return new String(bytes, "UTF8");
+            return new String(bytes, "KOI8-R");
+//            return new String(bytes, "UTF8");
         } catch (UnsupportedEncodingException e) {
             logger.warn("unsupported encoding!", e);
         }
