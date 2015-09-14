@@ -7,7 +7,6 @@ import java.util.Date;
 public class NotificationPanel extends JPanel {
 
     private final JTextArea notificationArea;
-    private final JScrollPane scrollPane;
 
     public NotificationPanel() {
         notificationArea = new JTextArea();
@@ -17,7 +16,7 @@ public class NotificationPanel extends JPanel {
         notificationArea.setFont(font);
 //        notificationArea.setForeground(Color.BLUE);
 
-        scrollPane = new JScrollPane(notificationArea);
+        JScrollPane scrollPane = new JScrollPane(notificationArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 
