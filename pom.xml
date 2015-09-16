@@ -18,7 +18,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.35</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -54,6 +53,34 @@
         <finalName>${name}</finalName>
         <pluginManagement>
             <plugins>
+                <!--<plugin>-->
+                    <!--<groupId>org.apache.maven.plugins</groupId>-->
+                    <!--<artifactId>maven-dependency-plugin</artifactId>-->
+                    <!--<executions>-->
+                        <!--<execution>-->
+                            <!--<id>copy-dependencies</id>-->
+                            <!--<phase>prepare-package</phase>-->
+                            <!--<goals>-->
+                                <!--<goal>copy-dependencies</goal>-->
+                            <!--</goals>-->
+                            <!--<configuration>-->
+                                <!--<outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+                            <!--</configuration>-->
+                        <!--</execution>-->
+                    <!--</executions>-->
+                <!--</plugin>-->
+                <!--<plugin>-->
+                    <!--<groupId>org.apache.maven.plugins</groupId>-->
+                    <!--<artifactId>maven-shade-plagin</artifactId>-->
+                    <!--<executions>-->
+                        <!--<execution>-->
+                            <!--<phase>package</phase>-->
+                            <!--<goals>-->
+                                <!--<goal>shade</goal>-->
+                            <!--</goals>-->
+                        <!--</execution>-->
+                    <!--</executions>-->
+                <!--</plugin>-->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -73,6 +100,7 @@
                         </archive>
                     </configuration>
                 </plugin>
+
                 <!--<plugin>-->
                     <!--<artifactId>maven-assembly-plugin</artifactId>-->
                     <!--<executions>-->
