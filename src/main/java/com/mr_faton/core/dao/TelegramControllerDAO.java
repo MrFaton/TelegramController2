@@ -34,6 +34,10 @@ public class TelegramControllerDAO {
         final String digitalHeader = telegram.getDigitalHeader();
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, -(telegram.getBeginMin()));
+
+        /*TODO remove this in future (because time on server less on 3 hour then time on this machine)*/
+        calendar.add(Calendar.HOUR_OF_DAY, -3);
+
         final Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
         Connection connection = DriverManager.getConnection(jdbcURL, user, password);

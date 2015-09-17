@@ -86,11 +86,19 @@ public class TelegramController implements Runnable{
                         notificationPanel.addWarningNotification("Телеграмма \"" + nextTelegram + "\" в БД \"" +
                                 dbServer + "\" НЕ существует!");
                         alarmPlayer.play();
-                        UserNotifier.errorMessage("Пропущена телеграмма",
-                                "Была пропущена телеграмма, ознакомьтесь с деталями!");
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                UserNotifier.errorMessage("Пропущена телеграмма",
+                                        "Была пропущена телеграмма, ознакомьтесь с деталями!");
+                            }
+                        }).start();
+
                     } else {
                         notificationPanel.
                                 addNotification("Телеграмма \"" + nextTelegram + "\" есть в БД \"" + dbServer + "\"");
+                        logger.info("telegram \"" + nextTelegram + "\" exists in DB \"" + dbServer + "\"");
                     }
                 }
 

@@ -39,6 +39,7 @@ public class ButtonPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 enableStopButton();
+                disableNotifiedButton();
                 alarmPlayer.stop();
             }
         });
