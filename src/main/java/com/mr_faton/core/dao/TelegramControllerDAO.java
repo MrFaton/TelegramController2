@@ -34,13 +34,14 @@ public class TelegramControllerDAO {
         final String digitalHeader = telegram.getDigitalHeader();
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, -(telegram.getBeginMin()));
-        final Date thresholdDate = new Date(calendar.getTimeInMillis());
+        final Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
         Connection connection = DriverManager.getConnection(jdbcURL, user, password);
         PreparedStatement preparedStatement = connection.prepareStatement(SQL);
 
         preparedStatement.setString(1, digitalHeader);
-        preparedStatement.setDate(2, thresholdDate);
+//        preparedStatement.setDate(2, thresholdDate);
+        preparedStatement.setTimestamp(2, timestamp);
 
         ResultSet resultSet = preparedStatement.executeQuery();
 
