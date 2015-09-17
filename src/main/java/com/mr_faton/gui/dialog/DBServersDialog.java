@@ -117,7 +117,7 @@ public class DBServersDialog extends JDialog{
             }
         });
 
-        JButton cancelButton = new JButton("Отмена");
+        JButton cancelButton = new JButton("Закрыть");
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

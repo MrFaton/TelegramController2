@@ -33,7 +33,9 @@ public class TelegramControllerDAO {
         final String header = telegram.getHeader();
         final String digitalHeader = telegram.getDigitalHeader();
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, -(telegram.getBeginMin()));
+        calendar.add(Calendar.MINUTE, -(telegram.getDelayInMin()));
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
 
         /*TODO remove this in future (because time on server less on 3 hour then time on this machine)*/
         calendar.add(Calendar.HOUR_OF_DAY, -3);

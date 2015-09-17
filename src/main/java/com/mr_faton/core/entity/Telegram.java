@@ -10,6 +10,7 @@ public class Telegram implements Serializable {
     private int beginMin;
 
     private int periodInMin;
+    private int delayInMin;
 
     private boolean state;
 
@@ -48,6 +49,13 @@ public class Telegram implements Serializable {
     }
     public void setPeriodInMin(int periodInMin) {
         this.periodInMin = periodInMin;
+    }
+
+    public int getDelayInMin() {
+        return delayInMin;
+    }
+    public void setDelayInMin(int delayInMin) {
+        this.delayInMin = delayInMin;
     }
 
     public boolean getState() {

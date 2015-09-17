@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.List;
 
 public class TelegramsDialog extends JDialog {
-    private static int WIDTH = 660;
+    private static int WIDTH = 715;
     private static int HEIGHT = 280;
     private List<Telegram> telegramList;
 
@@ -28,8 +28,8 @@ public class TelegramsDialog extends JDialog {
 
         telegramList = SettingsHolder.getTelegramList();
 
-        String[] columnHeaders = {"Заголовок", "Цифр заголовок", "Час начала", "Минуты начала", "Период в мин", "Включен"};
-        final DefaultTableModel tableModel = new DefaultTableModel(0, 6);
+        String[] columnHeaders = {"Заголовок", "Цифр заголовок", "Час начала", "Минуты начала", "Задержка в мин", "Период в мин", "Включен"};
+        final DefaultTableModel tableModel = new DefaultTableModel(0, 7);
         tableModel.setColumnIdentifiers(columnHeaders);
 
 
@@ -41,6 +41,7 @@ public class TelegramsDialog extends JDialog {
                         telegram.getDigitalHeader(),
                         telegram.getBeginHour(),
                         telegram.getBeginMin(),
+                        telegram.getDelayInMin(),
                         telegram.getPeriodInMin(),
                         telegram.getState()
                 });
@@ -57,7 +58,8 @@ public class TelegramsDialog extends JDialog {
                     case 2: return Integer.class;
                     case 3: return Integer.class;
                     case 4: return Integer.class;
-                    case 5: return Boolean.class;
+                    case 5: return Integer.class;
+                    case 6: return Boolean.class;
                     default: return Object.class;
                 }
             }
@@ -114,8 +116,9 @@ public class TelegramsDialog extends JDialog {
                     telegram.setDigitalHeader((String) tableModel.getValueAt(rowNumber, 1));
                     telegram.setBeginHour((Integer) tableModel.getValueAt(rowNumber, 2));
                     telegram.setBeginMin((Integer) tableModel.getValueAt(rowNumber, 3));
-                    telegram.setPeriodInMin((Integer) tableModel.getValueAt(rowNumber, 4));
-                    telegram.setState((Boolean) tableModel.getValueAt(rowNumber, 5));
+                    telegram.setDelayInMin((Integer) tableModel.getValueAt(rowNumber, 4));
+                    telegram.setPeriodInMin((Integer) tableModel.getValueAt(rowNumber, 5));
+                    telegram.setState((Boolean) tableModel.getValueAt(rowNumber, 6));
 
                     updatedTelegramList.add(telegram);
                 }
@@ -126,7 +129,7 @@ public class TelegramsDialog extends JDialog {
             }
         });
 
-        JButton cancelButton = new JButton("Отмена");
+        JButton cancelButton = new JButton("Закрыть");
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

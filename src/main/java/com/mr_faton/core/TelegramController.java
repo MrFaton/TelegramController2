@@ -119,10 +119,14 @@ public class TelegramController implements Runnable{
         int beginHour = telegram.getBeginHour();
         int beginMin = telegram.getBeginMin();
         int periodInMin = telegram.getPeriodInMin();
+        int delayMin = telegram.getDelayInMin();
+        int resultMin = beginMin + delayMin;
 
         Calendar workTime = Calendar.getInstance();
         workTime.set(Calendar.HOUR_OF_DAY, beginHour);
-        workTime.set(Calendar.MINUTE, beginMin);
+        workTime.set(Calendar.MINUTE, resultMin);
+        workTime.set(Calendar.SECOND, 0);
+        workTime.set(Calendar.MILLISECOND, 0);
 
         long currentTime = System.currentTimeMillis();
 

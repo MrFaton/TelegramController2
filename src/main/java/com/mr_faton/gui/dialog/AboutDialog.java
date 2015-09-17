@@ -45,6 +45,6 @@ public class AboutDialog extends JDialog{
         //устанавливаем положение (координаты фрейма)
         setLocation(monitorWidth / 2 - WIDTH / 2, monitorHeight / 2 - HEIGHT / 2);
         //делаем чтобы окно не могло менять размер
-        setResizable(true);
+        setResizable(false);
     }
 }
