@@ -80,9 +80,9 @@ public class TelegramController implements Runnable{
                     notificationPanel.
                             addNotification("Проверяем телеграмму \"" + nextTelegram + "\" в БД \"" + dbServer + " \"");
                     if (!telegramControllerDAO.isTelegramExist(nextTelegram, dbServer)) {
-                        logger.info("telegram" + nextTelegram + " is not exist on db server " + dbServer);
                         buttonPanel.enableNotifiedButton();
                         buttonPanel.disableStopButton();
+                        logger.warn("telegram " + nextTelegram + " is not exist on db server \"" + dbServer + "\"!!!!!!!!!");
                         notificationPanel.addWarningNotification("Телеграмма \"" + nextTelegram + "\" в БД \"" +
                                 dbServer + "\" НЕ существует!");
                         alarmPlayer.play();
