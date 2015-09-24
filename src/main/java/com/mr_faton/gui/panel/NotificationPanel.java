@@ -1,6 +1,7 @@
 package com.mr_faton.gui.panel;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.util.Date;
 
@@ -14,6 +15,8 @@ public class NotificationPanel extends JPanel {
         notificationArea.setEditable(false);
         Font font = new Font("Verdana", Font.PLAIN, 14);
         notificationArea.setFont(font);
+        DefaultCaret caret = (DefaultCaret) notificationArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 //        notificationArea.setForeground(Color.BLUE);
 
         JScrollPane scrollPane = new JScrollPane(notificationArea);
