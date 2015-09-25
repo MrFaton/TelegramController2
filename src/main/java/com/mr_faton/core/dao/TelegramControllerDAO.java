@@ -37,8 +37,8 @@ public class TelegramControllerDAO {
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        /*TODO remove this in future (because time on server less on 3 hour then time on this machine)*/
-        calendar.add(Calendar.HOUR_OF_DAY, -3);
+//        /*TODO remove this in future (because time on server less on 3 hour then time on this machine)*/
+//        calendar.add(Calendar.HOUR_OF_DAY, -3);
 
         final Timestamp timestamp = new Timestamp(calendar.getTimeInMillis());
 
@@ -46,7 +46,6 @@ public class TelegramControllerDAO {
         PreparedStatement preparedStatement = connection.prepareStatement(SQL);
 
         preparedStatement.setString(1, digitalHeader);
-//        preparedStatement.setDate(2, thresholdDate);
         preparedStatement.setTimestamp(2, timestamp);
 
         ResultSet resultSet = preparedStatement.executeQuery();

@@ -110,6 +110,9 @@ public class TelegramController implements Runnable{
         } catch (Exception ex) {
             logger.warn("some exception", ex);
             notificationPanel.addNotification("Работа прервана");
+            buttonPanel.enableStartButton();
+            buttonPanel.disableStopButton();
+            UserNotifier.errorMessage("Ошибка в работе программы!", ex.getMessage());
         }
     }
 
