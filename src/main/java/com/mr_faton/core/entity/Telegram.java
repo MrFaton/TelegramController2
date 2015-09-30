@@ -12,6 +12,18 @@ public class Telegram implements Serializable {
     private int periodInMin;
     private int delayInMin;
 
+    private int stopHour;
+    private int stopMin;
+
+    private boolean aroundTheClock;
+    private boolean monday;
+    private boolean tuesday;
+    private boolean wednesday;
+    private boolean thursday;
+    private boolean friday;
+    private boolean saturday;
+    private boolean sunday;
+
     private boolean state;
 
     private long nextTime;
@@ -58,6 +70,77 @@ public class Telegram implements Serializable {
         this.delayInMin = delayInMin;
     }
 
+    public int getStopHour() {
+        return stopHour;
+    }
+    public void setStopHour(int stopHour) {
+        this.stopHour = stopHour;
+    }
+
+    public int getStopMin() {
+        return stopMin;
+    }
+    public void setStopMin(int stopMin) {
+        this.stopMin = stopMin;
+    }
+
+
+    public boolean isAroundTheClock() {
+        return aroundTheClock;
+    }
+    public void setAroundTheClock(boolean aroundTheClock) {
+        this.aroundTheClock = aroundTheClock;
+    }
+
+    public boolean isMonday() {
+        return monday;
+    }
+    public void setMonday(boolean monday) {
+        this.monday = monday;
+    }
+
+    public boolean isTuesday() {
+        return tuesday;
+    }
+    public void setTuesday(boolean tuesday) {
+        this.tuesday = tuesday;
+    }
+
+    public boolean isWednesday() {
+        return wednesday;
+    }
+    public void setWednesday(boolean wednesday) {
+        this.wednesday = wednesday;
+    }
+
+    public boolean isThursday() {
+        return thursday;
+    }
+    public void setThursday(boolean thursday) {
+        this.thursday = thursday;
+    }
+
+    public boolean isFriday() {
+        return friday;
+    }
+    public void setFriday(boolean friday) {
+        this.friday = friday;
+    }
+
+    public boolean isSaturday() {
+        return saturday;
+    }
+    public void setSaturday(boolean saturday) {
+        this.saturday = saturday;
+    }
+
+    public boolean isSunday() {
+        return sunday;
+    }
+    public void setSunday(boolean sunday) {
+        this.sunday = sunday;
+    }
+
     public boolean getState() {
         return state;
     }
@@ -87,6 +170,6 @@ public class Telegram implements Serializable {
         if (obj == null) return false;
         if (this.getClass() != obj.getClass()) return false;
         Telegram otherTelegram = (Telegram) obj;
-        return this.header == otherTelegram.header && this.digitalHeader == otherTelegram.digitalHeader;
+        return this.header.equals(otherTelegram.header) && this.digitalHeader.equals(otherTelegram.digitalHeader);
     }
 }
